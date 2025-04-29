@@ -21,6 +21,11 @@ jobs:
           curl -L -o "$VERSION-darwin-amd64" https://github.com/prom3theu5/helm-value-diff/releases/download/$VERSION/helm-value-diff-darwin-amd64
           curl -L -o "$VERSION-linux-amd64" https://github.com/prom3theu5/helm-value-diff/releases/download/$VERSION/helm-value-diff-linux-amd64
 
+      - name: Sanitize version (remove 'v' prefix)
+        run: echo "VERSION_NO_PREFIX=${VERSION#v}" >> $GITHUB_ENV
+        env:
+          VERSION: ${{ env.VERSION }}
+
       - name: Calculate SHA256
         id: sha
         run: |
@@ -30,7 +35,7 @@ jobs:
 
       - name: Patch formula
         run: |
-          sed -i "s|version \".*\"|version \"${{ env.VERSION#v }}\"|" Formula/helm-value-diff.rb
+          sed -i "s|version \".*\"|version \"${{ env.VERSION_NO_PREFIX }}\"|" Formula/helm-value-diff.rb
           sed -i "0,/url \".*\"/s|url \".*\"|url \"https://github.com/prom3theu5/helm-value-diff/releases/download/${{ env.VERSION }}/helm-value-diff-darwin-arm64\"|" Formula/helm-value-diff.rb
           sed -i "0,/sha256 \".*\"/s|sha256 \".*\"|sha256 \"${{ steps.sha.outputs.darwin_arm64 }}\"|" Formula/helm-value-diff.rb
           sed -i "1,/url \".*\"/s|url \".*\"|url \"https://github.com/prom3theu5/helm-value-diff/releases/download/${{ env.VERSION }}/helm-value-diff-darwin-amd64\"|" Formula/helm-value-diff.rb
