@@ -35,6 +35,7 @@ jobs:
 
       - name: Patch formula
         run: |
+          sed -i 's|^  version \".*\"|  version "${{ env.VERSION_NO_PREFIX }}"|' Formula/helm-value-diff.rb
           sed -i "/# HOMEBREW_MAC_ARM/,/# END_HOMEBREW_MAC_ARM/c\
           # HOMEBREW_MAC_ARM\\n          url \"https://github.com/prom3theu5/helm-value-diff/releases/download/${{ env.VERSION }}/helm-value-diff-darwin-arm64\"\\n          sha256 \"${{ steps.sha.outputs.darwin_arm64 }}\"\\n          # END_HOMEBREW_MAC_ARM" Formula/helm-value-diff.rb
 
