@@ -53,11 +53,9 @@ jobs:
           sha256 \"${{ steps.sha.outputs.linux_amd64 }}\"\
           # END_HOMEBREW_LINUX_AMD64" Formula/helm-value-diff.rb
 
-          sed -i "s|version \".*\"|version \"${{ env.VERSION_NO_PREFIX }}\"|" Formula/helm-value-diff.rb
-
       - name: Commit and push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git commit -am "chore: bump to ${{ env.VERSION }}"
+          git commit -am "chore: bump to ${{ env.VERSION }}" || echo "No changes to commit"
           git push
